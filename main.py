@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 import csv
+import random
 
 # Charger les données du fichier CSV
 app = FastAPI()
@@ -15,7 +16,7 @@ def load_data_from_csv(file_path):
 
 
 @app.get("/questions")
-def get_questions(use: str = None, subject: str = None):
+def get_questions(use: str = None, subject: str = None, num_questions: int = 5):
     data = load_data_from_csv('./questions.csv')
     filtered_questions = []
     if use:
@@ -27,4 +28,9 @@ def get_questions(use: str = None, subject: str = None):
     else:
         return {"error": "Veuillez fournir un paramètre 'use' ou 'subject'."}
 
-    return filtered_questions
+    random.shuffle(filtered_questions)  # Mélange aléatoire des questions
+
+    # Sélection du nombre de questions demandé
+    selected_questions = filtered_questions[:num_questions]
+
+    return selected_questions
